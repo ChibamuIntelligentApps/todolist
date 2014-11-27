@@ -3,12 +3,15 @@ package com.poop.todo.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +27,7 @@ public class TodoController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TodoController.class);
 	protected static final String MODEL_ATTRIBUTE_TODO = "todo";
 	protected static final String VIEW_TODO_ADD = "todo/add";
+	protected static final String REQUEST_MAPPING_TODO_VIEW = "/todo/{id}";
 	private final TodoService todoService;
 	
 	private final MessageSource messageSource;
@@ -57,8 +61,9 @@ public class TodoController {
 	}
 	
 	@RequestMapping(value="/todo/add", method = RequestMethod.POST)
-	public String add(){
-		return "";
+	public String add(@Valid @ModelAttribute (MODEL_ATTRIBUTE_TODO) TodoDTO dto){
+		LOGGER.debug("Adding a new to-do entry with information: {}",dto);
+		return createRedirectViewPath(REQUEST_MAPPING_TODO_VIEW);
 	}
 	
 	private List<TodoDTO> createDTOs(List<Todo> models){
@@ -74,6 +79,13 @@ public class TodoController {
 		todoDto.setTitle(model.getTitle());
 		todoDto.setDescription(model.getDescription());
 		return todoDto;
+	}
+	
+	private String createRedirectViewPath(String requestMapping){
+		StringBuilder redirectViewPath = new StringBuilder();
+		redirectViewPath.append("redirect:");
+		redirectViewPath.append(requestMapping);
+		return redirectViewPath.toString();
 	}
 	
 }

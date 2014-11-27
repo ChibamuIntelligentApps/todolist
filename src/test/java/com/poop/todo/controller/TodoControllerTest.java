@@ -38,6 +38,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 @WebAppConfiguration
 public class TodoControllerTest {
 	
+	private static final String TODO_ADD_JSP="/WEB-INF/jsp/todo/add.jsp";
 	@Resource
 	private WebApplicationContext webApplicationContext;
 	
@@ -56,7 +57,7 @@ public class TodoControllerTest {
 		mockMvc.perform(get("/todo/add"))
 				.andExpect(status().isOk())
 				.andExpect(view().name(TodoController.VIEW_TODO_ADD))
-				.andExpect(forwardedUrl("/WEB-INF/jsp/todo/add.jsp"))
+				.andExpect(forwardedUrl(TODO_ADD_JSP))
 				.andExpect(model().attribute(TodoController.MODEL_ATTRIBUTE_TODO, hasProperty("id",nullValue())))
 				.andExpect(model().attribute(TodoController.MODEL_ATTRIBUTE_TODO, hasProperty("description",isEmptyOrNullString())))
 				.andExpect(model().attribute(TodoController.MODEL_ATTRIBUTE_TODO, hasProperty("title", isEmptyOrNullString())));
@@ -69,6 +70,9 @@ public class TodoControllerTest {
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.sessionAttr(TodoController.MODEL_ATTRIBUTE_TODO, new TodoDTO())
 				)
-			.andExpect(status().isOk());
+			.andExpect(status().isOk())
+			.andExpect(view().name(TodoController.VIEW_TODO_ADD))
+			.andExpect(forwardedUrl(TODO_ADD_JSP))
+			.andExpect(model().attributeHasFieldErrors(TodoController.MODEL_ATTRIBUTE_TODO, "title"));
 	}
 }
