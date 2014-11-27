@@ -22,8 +22,8 @@ import com.poop.todo.service.TodoService;
 @Controller
 public class TodoController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TodoController.class);
-	private static final String MODEL_ATTRIBUTE_TODO = "todo";
-	private static final String VIEW_TODO_ADD = "todo/add";
+	protected static final String MODEL_ATTRIBUTE_TODO = "todo";
+	protected static final String VIEW_TODO_ADD = "todo/add";
 	private final TodoService todoService;
 	
 	private final MessageSource messageSource;
@@ -48,12 +48,17 @@ public class TodoController {
 	}
 	
 	@RequestMapping(value = "/todo/add", method = RequestMethod.GET)
-	public void showAddTodoForm(Model model){
+	public String showAddTodoForm(Model model){
 		LOGGER.debug("Rendering add to-do entry form.");
 		
 		 TodoDTO formObject = new TodoDTO();
 		 model.addAttribute(MODEL_ATTRIBUTE_TODO, formObject);
 		 return VIEW_TODO_ADD;
+	}
+	
+	@RequestMapping(value="/todo/add", method = RequestMethod.POST)
+	public String add(){
+		return "";
 	}
 	
 	private List<TodoDTO> createDTOs(List<Todo> models){
