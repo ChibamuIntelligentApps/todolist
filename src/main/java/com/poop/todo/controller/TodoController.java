@@ -14,6 +14,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,6 +77,10 @@ public class TodoController {
 		LOGGER.debug("Adding a new to-do entry with information: {}", dto);
 		
 		if (result.hasErrors()) {
+			List<ObjectError> errors = result.getAllErrors();
+			for(ObjectError err: errors){
+				LOGGER.debug("ERROR="+err.toString());
+			}	
 			 LOGGER.debug("Add to-do form was submitted with binding errors. Rendering form view.");
 			 return VIEW_TODO_ADD;
 		} 
