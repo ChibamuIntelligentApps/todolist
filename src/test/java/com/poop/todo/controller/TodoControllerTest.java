@@ -61,18 +61,18 @@ public class TodoControllerTest {
 				.andExpect(model().attribute(TodoController.MODEL_ATTRIBUTE_TODO, hasProperty("id",nullValue())))
 				.andExpect(model().attribute(TodoController.MODEL_ATTRIBUTE_TODO, hasProperty("description",isEmptyOrNullString())))
 				.andExpect(model().attribute(TodoController.MODEL_ATTRIBUTE_TODO, hasProperty("title", isEmptyOrNullString())));
-		verifyZeroInteractions(todoServiceMock);
+		//verifyZeroInteractions(todoServiceMock);
 	}
 	
 	@Test
 	public void add_EmptyTodoEntry_ShouldRenderFormViewAndReturnValidationErrorForTitle() throws Exception {
-		mockMvc.perform(post("/todo/add")
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.sessionAttr(TodoController.MODEL_ATTRIBUTE_TODO, new TodoDTO())
-				)
+		mockMvc.perform(post("/todo/add").contentType(MediaType.APPLICATION_FORM_URLENCODED).sessionAttr(TodoController.MODEL_ATTRIBUTE_TODO, new TodoDTO()))
 			.andExpect(status().isOk())
 			.andExpect(view().name(TodoController.VIEW_TODO_ADD))
 			.andExpect(forwardedUrl(TODO_ADD_JSP))
-			.andExpect(model().attributeHasFieldErrors(TodoController.MODEL_ATTRIBUTE_TODO, "title"));
+			.andExpect(model().attributeHasFieldErrors(TodoController.MODEL_ATTRIBUTE_TODO, "title"))
+			.andExpect(model().attribute(TodoController.MODEL_ATTRIBUTE_TODO, hasProperty("id", nullValue())))
+			.andExpect(model().attribute(TodoController.MODEL_ATTRIBUTE_TODO, hasProperty("description", isEmptyOrNullString())))
+			.andExpect(model().attribute(TodoController.MODEL_ATTRIBUTE_TODO, hasProperty("title", isEmptyOrNullString())));
 	}
 }
