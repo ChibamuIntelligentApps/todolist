@@ -12,6 +12,7 @@ import com.poop.todo.config.WebAppContext;
 import com.poop.todo.dto.TodoDTO;
 import com.poop.todo.model.Todo;
 import com.poop.todo.service.TodoService;
+import com.poop.todo.testmvc.model.TodoBuilder;
 import com.poop.todo.util.TestUtil;
 import com.poop.todo.util.WebTestConstants;
 
@@ -42,6 +43,10 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 public class TodoControllerTest {
 	
 	private static final String TODO_ADD_JSP="/WEB-INF/jsp/todo/add.jsp";
+	private static final Long ID = 1L;
+	private static final String DESCRIPTION = "description";
+	private static final String TITLE = "title";
+	
 	@Resource
 	private WebApplicationContext webApplicationContext;
 	
@@ -102,5 +107,20 @@ public class TodoControllerTest {
 		verifyZeroInteractions(todoServiceMock);
 	}
 	
+	public void add_NewTodoEntry_ShouldAddTodoEntryAndRenderTodoEntryView() throws Exception {
+		Todo added = new TodoBuilder()
+			.id(ID)
+			.description(DESCRIPTION)
+			.title(TITLE)
+			.build();
+		
+		mockMvc.perform(post("/todo/add")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param(WebTestConstants.FORM_FIELD_DESCRIPTION, "description")
+				.param(WebTestConstants.FORM_FIELD_TITLE, "title")
+				.sessionAttr(TodoController.MODEL_ATTRIBUTE_TODO, new TodoDTO())
+				).andExpect(status().isMovedTemporarily());
+		
+	}
 	
 }
